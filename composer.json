@@ -1,0 +1,22 @@
+{
+    "name": "fandisus/lolok",
+    "description": "Various wrapper functions for PHP",
+    "type": "library",
+    "require": {
+        "ezyang/htmlpurifier": "^4.13",
+        "mobiledetect/mobiledetectlib": "^2.8"
+    },
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Fandisus\\Lolok\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "fandis",
+            "email": "great_beluluk@yahoo.com"
+        }
+    ],
+    "minimum-stability": "beta"
+}
