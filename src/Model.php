@@ -131,6 +131,7 @@ abstract class Model { //Versi 3_1: Tambah jsonColumns
     }
   }
   public static function multiInsert(&$objects, $batchSize=10000, $JSONConvert=false) { //Pake byref biar hemat memory
+    if (DB::$driver === 'oracle') JSONResponse::Error('Lolok Model multiInsert does not support oracle yet');
     $count=count($objects);
     if ($count === 0) throw new \Exception('No object to insert.');
     //cols sesuai kiriman di $objects, dan ndak dijson_encode di sini. Ke depan perlu dipertimbangkan untuk encode di sini.

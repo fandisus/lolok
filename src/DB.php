@@ -15,9 +15,16 @@ class DB {
   public static function setFetchMode($mode) { static::$fetch_mode = $mode; }
   public static function setConnection($db, $user, $pass, $port) {
     list(static::$db,static::$user,static::$pass,static::$port) = [$db,$user,$pass,$port];
+    static::$initialized = false;
+  }
+  public static function setConnectionWithObject($obj){
+    list(static::$host, static::$driver, static::$db,static::$user,static::$pass,static::$port) =
+        [$obj->host, $obj->driver, $obj->dbname, $obj->username, $obj->password, $obj->port];
+    static::$initialized=false;
   }
   public static function nq($string) {
     if (static::$driver === 'pgsql') return str_replace("'", "''", str_replace("\\","\\\\",$string));
+    elseif (static::$driver === 'oracle') return str_replace("'", "''", $string);
     return str_replace("'", "\\'", str_replace("\\","\\\\",$string));
   }
   public static function nqq($string) {
@@ -27,10 +34,17 @@ class DB {
     if (!$force && static::$initialized) return;
     if (static::$host === 'localhost' && PHP_OS !== 'Linux') static::$host = '127.0.0.1';
     $host = static::$host;
+    $driver = static::$driver;
+    $port = static::$port;
+    $db = static::$db;
     try {
-      $setCharset = (self::$driver === 'mysql') ? 'charset=utf8;' : '';
-      $pdo = new \PDO(
-            static::$driver.":host=$host;port=".static::$port.";dbname=".static::$db.";".$setCharset, static::$user, static::$pass, array(
+      //pgsql:host=localhost;port=5432;dbname=testdb;user=bruce;password=mypass
+      //mysql:host=localhost;port=3307;dbname=testdb
+      //oci:dbname=//localhost:1521/mydb
+      $dsn = "$driver:host=$host;port=$port;dbname=$db;";
+      if (self::$driver === 'mysql') $dsn.='charset=utf8;';
+      elseif (self::$driver === 'oracle') $dsn = "oci:dbname=//$host:$port/$db";
+      $pdo = new \PDO($dsn, static::$user, static::$pass, array(
               \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
               \PDO::ATTR_DEFAULT_FETCH_MODE => static::$fetch_mode
             ));
@@ -61,7 +75,7 @@ class DB {
       }
       $sth->execute();
       if ($sequenceName) {
-        if (static::$driver === 'mysql') return static::$pdo->lastInsertId();
+        if (in_array(static::$driver, ['mysql', 'oracle'])) return static::$pdo->lastInsertId();
         elseif (static::$driver === 'pgsql') return static::$pdo->lastInsertId($sequenceName);
       }
       return true;
@@ -120,7 +134,7 @@ class DB {
       throw $ex;
     }
   }
-  public static function transExecute($sqls, $bindings=[]) {
+  public static function transExecute($sqls, $bindings=[]) { //$bindings is 2 level nested array
     static::init();
     try {
       static::$pdo->beginTransaction();
