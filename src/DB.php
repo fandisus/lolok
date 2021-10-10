@@ -120,6 +120,15 @@ class DB {
       throw $ex;
     }
   }
+  public function oraSelectCount($query, $params=array()) {
+    $query = "SELECT count(*) jum FROM ($query)";
+    return $this->getOneVal($query, $params);
+  }
+  public function oraSelectLimit($query, $offset, $len, $params=array()) {
+    $end = $offset + $len;
+    $query = "SELECT * FROM (SELECT t.*,rownum as recordnum from ($query) t where rownum<=$end) where recordnum>$offset";
+    return $this->get($query, $params);
+  }
   public static function getOneRow($sql, $bindings=[]) {
     static::init();
     try {
