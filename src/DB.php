@@ -49,7 +49,7 @@ class DB {
               \PDO::ATTR_DEFAULT_FETCH_MODE => static::$fetch_mode
             ));
     } catch (\Exception $ex) {
-      \Trust\JSONResponse::Error($ex->getMessage());
+      \Fandisus\Lolok\JSONResponse::Error($ex->getMessage());
     }
     DB::$pdo = $pdo;
     static::$initialized = true;

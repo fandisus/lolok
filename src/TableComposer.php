@@ -149,11 +149,11 @@ class TableComposer {
   }
   
   public function parse() {
-    $insides = \Trust\Basic::array_merge($this->columns, $this->constraints);
+    $insides = \Fandisus\Lolok\Basic::array_merge($this->columns, $this->constraints);
     $strInsides = implode(",\n  ", $insides);
     $comment = "-- tabel $this->tableName --";
     $dropper = "DROP TABLE IF EXISTS $this->tableName CASCADE;";
     $creator = "CREATE TABLE $this->tableName (\n  $strInsides\n);";
-    return \Trust\Basic::array_merge( [$comment, $dropper, $creator], $this->indexes, $this->comments );
+    return \Fandisus\Lolok\Basic::array_merge( [$comment, $dropper, $creator], $this->indexes, $this->comments );
   }
 }

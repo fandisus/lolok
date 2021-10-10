@@ -176,5 +176,5 @@ class Basic {
 //];
 //$b = json_decode(json_encode($b));
 //
-//$diff = \Trust\Basic::objDiff($a, $b);
-//\Trust\Debug::print_r(\Trust\Basic::pgReadableDiff($diff));
+//$diff = \Fandisus\Lolok\Basic::objDiff($a, $b);
+//\Fandisus\Lolok\Debug::print_r(\Fandisus\Lolok\Basic::pgReadableDiff($diff));

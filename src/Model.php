@@ -169,20 +169,20 @@ abstract class Model { //Versi 3_1: Tambah jsonColumns
     }
     $sqls[] = $sql.implode(',', $strVals);
     try {
-      foreach ($sqls as $s) { \Trust\DB::exec($s,[]); }
+      foreach ($sqls as $s) { \Fandisus\Lolok\DB::exec($s,[]); }
     } catch (\Exception $ex) {
       throw $ex;
     }
   }
   
   //Problem dulu:
-  //- Trust\Basic pakai if(!isset) untuk ignore. --> Nak set null jadi ndak biso.
+  //- Fandisus\Lolok\Basic pakai if(!isset) untuk ignore. --> Nak set null jadi ndak biso.
   //- Kalau pakai if (!property_exists), nak ignore jadi ndak biso.
   //Solution: Buat parameter ignores, dan targets
   //ignores untuk menentukan kolom yang diabaikan. Targets untuk menentukan HANYA kolom target yang mau diupdate.
   public function update($targets=[],$ignores=[],$debug=false) {
     if (!static::hasSerial()) $this->checkPKForUpdate();
-    $diff = \Trust\Basic::objDiff($this->_oldVals, $this);
+    $diff = \Fandisus\Lolok\Basic::objDiff($this->_oldVals, $this);
     if (!count($diff)) throw new \Exception('Tidak ada perubahan data');
     $onlyUpdateTarget = (count($targets) === 0) ? false : true;
     $cols = []; $bindings=[];
