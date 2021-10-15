@@ -48,9 +48,7 @@ class DB {
               \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
               \PDO::ATTR_DEFAULT_FETCH_MODE => static::$fetch_mode
             ));
-    } catch (\Exception $ex) {
-      \Fandisus\Lolok\JSONResponse::Error($ex->getMessage());
-    }
+    } catch (\Exception $ex) { throw $ex; }
     DB::$pdo = $pdo;
     static::$initialized = true;
   }
@@ -214,21 +212,21 @@ class DB {
     echo $out;
   }
   public static function pgRestore($dbname, $file) {
-    if (!isset(self::$appName)) JSONResponse::Error('App name is not set');
+    if (!isset(self::$appName)) throw new \Exception('App name is not set');
     $path = 'dbrestore.tmp';
     
     $isi = file_get_contents($file['tmp_name']);
     unlink($file['tmp_name']);
     $decoded = @gzdecode($isi);
-    if (!$decoded) JSONResponse::Error('Fail to decode backup file');
+    if (!$decoded) throw new \Exception('Fail to decode backup file');
     
     $restore = explode("\r\n",$decoded);
     $pop = array_shift($restore);
     $backupInfo = json_decode($pop);
-    if ($backupInfo == null) JSONResponse::Error('Invalid backup file');
+    if ($backupInfo == null) throw new \Exception('Invalid backup file');
     
-    if ($backupInfo->app != self::$appName) JSONResponse::Error('Invalid backup file version');
-    if ($backupInfo->ver != 1) JSONResponse::Error('Invalid backup file version');
+    if ($backupInfo->app != self::$appName) throw new \Exception('Invalid backup file version');
+    if ($backupInfo->ver != 1) throw new \Exception('Invalid backup file version');
     
     $fh = fopen($path, 'w');
     fwrite($fh, implode("\r\n", $restore));
