@@ -78,9 +78,11 @@ class TableComposer {
     $this->columns[count($this->columns)-1] .= " NOT NULL";
     return $this;
   }
-  public function unique() {
-    $col = $this->lastCol;
-    $this->constraints[] = "CONSTRAINT uq_$this->tableName"."_$col UNIQUE ($col)";
+  public function unique($cols = '') {
+    if ($cols == "") $cols = $this->lastCol;
+    $strCols = (is_array($cols)) ? implode(",",$cols) : $cols;
+    $uq_name = (is_array($cols)) ? $cols[0] : str_replace(',','',str_replace(' ','', $cols));
+    $this->constraints[] = "CONSTRAINT uq_$this->tableName"."_$uq_name UNIQUE ($strCols)";
     return $this;
   }
   public function index() {
@@ -149,11 +151,11 @@ class TableComposer {
   }
   
   public function parse() {
-    $insides = \Fandisus\Lolok\Basic::array_merge($this->columns, $this->constraints);
+    $insides = array_merge($this->columns, $this->constraints);
     $strInsides = implode(",\n  ", $insides);
     $comment = "-- tabel $this->tableName --";
     $dropper = "DROP TABLE IF EXISTS $this->tableName CASCADE;";
     $creator = "CREATE TABLE $this->tableName (\n  $strInsides\n);";
-    return \Fandisus\Lolok\Basic::array_merge( [$comment, $dropper, $creator], $this->indexes, $this->comments );
+    return array_merge( [$comment, $dropper, $creator], $this->indexes, $this->comments );
   }
 }
