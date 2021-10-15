@@ -118,15 +118,33 @@ class DB {
       throw $ex;
     }
   }
-  public function oraSelectCount($query, $params=array()) {
+  public static function oraSelectCount($query, $params=array()) {
     $query = "SELECT count(*) jum FROM ($query)";
-    return $this->getOneVal($query, $params);
+    return self::getOneVal($query, $params);
   }
-  public function oraSelectLimit($query, $offset, $len, $params=array()) {
+  public static function oraSelectLimit($query, $offset, $len, $params=array()) {
     $end = $offset + $len;
     $query = "SELECT * FROM (SELECT t.*,rownum as recordnum from ($query) t where rownum<=$end) where recordnum>$offset";
-    return $this->get($query, $params);
+    return self::get($query, $params);
   }
+  public static function tableExists($tableName, $schema='') {
+    if (self::$driver === 'mysql') { return self::rowExists('SHOW TABLES LIKE :TNAME', ['TNAME'=>$tableName]); }
+    elseif (self::$driver === 'pgsql') { 
+      if ($schema === '') $schema = 'public'; //Postgresql default schema = public
+      return self::rowExists(
+        'SELECT table_name FROM information_schema.tables WHERE table_schema=:SNAME AND table_name=:TNAME',
+        ['SNAME'=>$schema, 'TNAME'=>$tableName]
+      );
+    }
+    elseif (self::$driver === 'oracle') {
+      if ($schema === '') $schema = self::$user; //In oracle, default Schema = Username
+      return self::rowExists(
+        "SELECT * FROM ALL_ALL_TABLES WHERE OWNER=UPPER(:SNAME) AND TABLE_NAME=UPPER(:TNAME)",
+        ['SNAME'=>$schema, 'TNAME'=>$tableName]
+      );
+    }
+  }
+
   public static function getOneRow($sql, $bindings=[]) {
     static::init();
     try {
