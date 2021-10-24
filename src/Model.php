@@ -111,7 +111,7 @@ abstract class Model { //Versi 3_1: Tambah jsonColumns
     foreach ($bindings as $k=>$v) if (gettype($v) == "boolean") $bindings[$k] = ($v) ? 'true' : '0';
     foreach (static::jsonColumns() as $col) { if (isset($bindings[$col])) $bindings[$col] = json_encode($bindings[$col]); }
   }
-  public function insert() { //Untested for AI
+  public function insert() {
     if (!static::hasSerial()) $this->checkPKForInsert();
     $cols=[]; $bindings=[];
     $publicProps = static::getPublicProps();
@@ -185,7 +185,7 @@ abstract class Model { //Versi 3_1: Tambah jsonColumns
     $diff = \Fandisus\Lolok\Basic::objDiff($this->_oldVals, $this);
     if (!count($diff)) throw new \Exception('Tidak ada perubahan data');
     $onlyUpdateTarget = (count($targets) === 0) ? false : true;
-    $cols = []; $bindings=[];
+    $cols = []; $bindings=[]; $ignores[] = '_addedFields'; //2021-10-17, added default ignores, so extra fields will not be checked
     foreach ($diff as $col=>$obj) {
       if (in_array($col, $ignores)) continue; //ignores fields specified in ignore.
       if ($onlyUpdateTarget && !in_array($col, $targets)) continue;
