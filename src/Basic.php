@@ -72,13 +72,16 @@ class Basic {
         continue;
       }
       elseif (is_array($old->$k)) { //kalo array. Belum ado ngurus reorder. Equality check mungkin perlu pake json_encode_decode.
-        $removed = array_diff($old->$k, $new->$k); //get what is removed
-        $added = array_diff($new->$k, $old->$k); //get what is added
+        $oldArr = json_encode($old->$k);
+        $newArr = json_encode($new->$k);
+        if ($oldArr === $newArr) continue;
         $diff = new \stdClass();
-        if (count($added)) $diff->added = $added;
-        if (count($removed)) $diff->removed = $removed;
         $diff->old = $old->$k;
         $diff->new = $new->$k;
+        // $removed = array_diff($old->$k, $new->$k); //get what is removed
+        // $added = array_diff($new->$k, $old->$k); //get what is added
+        // if (count($added)) $diff->added = $added;
+        // if (count($removed)) $diff->removed = $removed;
         $hasil[$k] = $diff;
       } else { //Standard primitive
       }

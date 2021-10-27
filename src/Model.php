@@ -185,7 +185,8 @@ abstract class Model { //Versi 3_1: Tambah jsonColumns
     $diff = \Fandisus\Lolok\Basic::objDiff($this->_oldVals, $this);
     if (!count($diff)) throw new \Exception('Tidak ada perubahan data');
     $onlyUpdateTarget = (count($targets) === 0) ? false : true;
-    $cols = []; $bindings=[]; $ignores[] = '_addedFields'; //2021-10-17, added default ignores, so extra fields will not be checked
+    $cols = []; $bindings=[];
+    $ignores[] = '_addedFields'; $ignores[] = '_removedFields'; //2021-10-17 & 27, added default ignores, so extra fields will not be checked
     foreach ($diff as $col=>$obj) {
       if (in_array($col, $ignores)) continue; //ignores fields specified in ignore.
       if ($onlyUpdateTarget && !in_array($col, $targets)) continue;
