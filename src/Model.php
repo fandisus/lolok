@@ -131,7 +131,7 @@ abstract class Model { //Versi 3_1: Tambah jsonColumns
     }
   }
   public static function multiInsert(&$objects, $batchSize=10000, $JSONConvert=false) { //Pake byref biar hemat memory
-    if (DB::$driver === 'oracle') JSONResponse::Error('Lolok Model multiInsert does not support oracle yet');
+    if (DB::$engine === 'oracle' || DB::$engine === 'oci') JSONResponse::Error('Lolok Model multiInsert does not support oracle yet');
     $count=count($objects);
     if ($count === 0) throw new \Exception('No object to insert.');
     //cols sesuai kiriman di $objects, dan ndak dijson_encode di sini. Ke depan perlu dipertimbangkan untuk encode di sini.
@@ -139,26 +139,25 @@ abstract class Model { //Versi 3_1: Tambah jsonColumns
 //    $temp_cols = [];
 //    foreach ($objects[0] as $k=>$v) $temp_cols[]=$k;
     $sql = "INSERT INTO \"".static::tableName()."\" (\"".implode("\",\"", $columnList)."\") VALUES ";
-    if (DB::$driver === 'mysql') $sql = str_replace ('"', '`', $sql);
+    if (DB::$engine === 'mysql') $sql = str_replace ('"', '`', $sql);
     
-    if (DB::$driver == 'pgsql') {
+    if (DB::$engine == 'pgsql') {
       foreach ($objects as &$obj) {
         foreach ($obj as &$val) if (gettype($val) == "boolean") $val = ($val) ? 'true' : '0';
       }
-    } elseif (DB::$driver == 'mysql') {
+    } elseif (DB::$engine == 'mysql') {
       foreach ($objects as &$obj) {
         foreach ($obj as &$val) if (gettype($val) == "boolean") $val = ($val) ? 1 : 0;
       }
     }
     
-    DB::init(true); //force: true, Di init duluan, biar pdo->quote berjalan lancar sesuai driver.
     $idx=0; $sqls=[]; $vals=[];
     $strVals = [];
     while ($idx < $count) {
       $o = $objects[$idx++];
       if ($JSONConvert) foreach (static::jsonColumns() as $col) $o->$col = json_encode($o->$col);
       $vals = [];
-      foreach ($columnList as $col) $vals[]=($o->$col === null) ? 'NULL' : DB::$pdo->quote($o->$col);
+      foreach ($columnList as $col) $vals[]=($o->$col === null) ? 'NULL' : DB::nqq($o->$col);
       $strVals[]='('. implode(',', $vals). ')';
       if ($JSONConvert) foreach (static::jsonColumns() as $col) $o->$col = json_decode($o->$col);
       if ($idx % $batchSize == 0) {

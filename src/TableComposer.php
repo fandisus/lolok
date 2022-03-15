@@ -14,18 +14,18 @@ class TableComposer {
   }
   public function __construct($tableName) { $this->tableName = $tableName; }
   public function increments($colName) {
-    if (DB::$driver === 'pgsql') $this->columns[] = "$colName SERIAL";
-    elseif (DB::$driver === 'mysql') $this->columns[] = "$colName INT AUTO_INCREMENT";
+    if (DB::$engine === 'pgsql') $this->columns[] = "$colName SERIAL";
+    elseif (DB::$engine === 'mysql') $this->columns[] = "$colName INT AUTO_INCREMENT";
     return $this->returner($colName);
   }
   public function bigIncrements($colName) {
-    if (DB::$driver === 'pgsql') $this->columns[] = "$colName BIGSERIAL";
-    elseif (DB::$driver === 'mysql') $this->columns[] = "$colName BIGINT AUTO_INCREMENT";
+    if (DB::$engine === 'pgsql') $this->columns[] = "$colName BIGSERIAL";
+    elseif (DB::$engine === 'mysql') $this->columns[] = "$colName BIGINT AUTO_INCREMENT";
     return $this->returner($colName);
   }
   public function string($colName, $length=50) {
-    if (DB::$driver === 'pgsql') $this->columns[] = "$colName CHARACTER VARYING($length)";
-    elseif (DB::$driver === 'mysql') $this->columns[] = "$colName VARCHAR($length)";
+    if (DB::$engine === 'pgsql') $this->columns[] = "$colName CHARACTER VARYING($length)";
+    elseif (DB::$engine === 'mysql') $this->columns[] = "$colName VARCHAR($length)";
     return $this->returner($colName);
   }
   public function text($colName) {
@@ -33,17 +33,17 @@ class TableComposer {
     return $this->returner($colName);
   }
   public function integer($colName) {
-    if (DB::$driver === 'pgsql') $this->columns[] = "$colName INTEGER";
-    elseif (DB::$driver === 'mysql') $this->columns[] = "$colName INT";
+    if (DB::$engine === 'pgsql') $this->columns[] = "$colName INTEGER";
+    elseif (DB::$engine === 'mysql') $this->columns[] = "$colName INT";
     return $this->returner($colName);
   }
   public function bigInteger($colName) {
-    if (DB::$driver === 'pgsql' || DB::$driver === 'mysql') $this->columns[] = "$colName BIGINT";
+    if (DB::$engine === 'pgsql' || DB::$engine === 'mysql') $this->columns[] = "$colName BIGINT";
     return $this->returner($colName);
   }
   public function double($colName) {
-    if (DB::$driver === 'pgsql') $this->columns[] = "$colName DOUBLE PRECISION";
-    elseif (DB::$driver === 'mysql') $this->columns[] = "$colName DOUBLE";
+    if (DB::$engine === 'pgsql') $this->columns[] = "$colName DOUBLE PRECISION";
+    elseif (DB::$engine === 'mysql') $this->columns[] = "$colName DOUBLE";
     return $this->returner($colName);
   }
   public function numeric($colname, $precision, $scale) {
@@ -55,8 +55,8 @@ class TableComposer {
     return $this->returner($colName);
   }
   public function timestamp($colName) {
-    if (DB::$driver === 'pgsql') $this->columns[] = "$colName TIMESTAMP";
-    elseif (DB::$driver === 'mysql') $this->columns[] = "$colName DATETIME";
+    if (DB::$engine === 'pgsql') $this->columns[] = "$colName TIMESTAMP";
+    elseif (DB::$engine === 'mysql') $this->columns[] = "$colName DATETIME";
     return $this->returner($colName);
   }
   public function date($colName) {
@@ -68,8 +68,8 @@ class TableComposer {
     return $this->returner($colname);
   }
   public function jsonb($colName) {
-    if (DB::$driver === 'pgsql') $this->columns[] = "$colName JSONB";
-    elseif (DB::$driver === 'mysql') $this->columns[] = "$colName JSON";
+    if (DB::$engine === 'pgsql') $this->columns[] = "$colName JSONB";
+    elseif (DB::$engine === 'mysql') $this->columns[] = "$colName JSON";
     return $this->returner($colName);
   }
 
@@ -87,12 +87,12 @@ class TableComposer {
   }
   public function index() {
     $col = $this->lastCol;
-    if (DB::$driver === 'pgsql') $this->indexes[] = "CREATE INDEX idx_$col"."_$this->tableName ON $this->tableName USING BTREE ($col);";
-    elseif (DB::$driver === 'mysql') $this->indexes[] = "CREATE INDEX idx_$col"."_$this->tableName ON $this->tableName ($col);";
+    if (DB::$engine === 'pgsql') $this->indexes[] = "CREATE INDEX idx_$col"."_$this->tableName ON $this->tableName USING BTREE ($col);";
+    elseif (DB::$engine === 'mysql') $this->indexes[] = "CREATE INDEX idx_$col"."_$this->tableName ON $this->tableName ($col);";
     return $this;
   }
   public function ginPropIndex($props) { //Not supported in mysql
-    if (DB::$driver === 'mysql') return $this;
+    if (DB::$engine === 'mysql') return $this;
     $col = $this->lastCol;
     if (!is_array($props)) $props = [$props];
     foreach ($props as $v) {
@@ -101,7 +101,7 @@ class TableComposer {
     return $this;
   }
   public function ginIndex() { //Not supported in mysql
-    if (DB::$driver === 'mysql') return $this;
+    if (DB::$engine === 'mysql') return $this;
     $col = $this->lastCol;
     $this->indexes[] = "CREATE INDEX idx_$col"."_$this->tableName ON $this->tableName USING GIN ($col);";
     return $this;
