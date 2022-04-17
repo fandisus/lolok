@@ -31,26 +31,31 @@ class Files {
    * @param String $directory The directory to be scanned
    * @return arrayofobj a[filename][size/modTime/path]
    */
-  static function GetDirFiles($directory, $isObj=false) { //recursive, 
+  static function GetDirFiles($directory) { //recursive, 
     $files = array();
     $dh = opendir($directory);
     while ($filename = readdir($dh)) {
-      if (($filename != ".") && ($filename != "..")) {
-        $path = "$directory/$filename";
-        if (is_dir($path)) {
-          $files[$path] = Files::GetDirFiles($path, $isObj);
-        } else {
-          if ($isObj) {
-            $o = new \stdClass();
-            $o->size = round(filesize($path) / 1024);
-            $o->modTime = filemtime($path);
-            $o->filename = $filename;
-            $o->path = $path;
-            $files[]=$o;
-          } else {
-            $files[] = $path;
-          }
-        }
+      if (in_array($filename, ['.', '..'])) continue;
+      $path = "$directory/$filename";
+      if (is_dir($path)) $files[$path] = Files::GetDirFiles($path);
+      else$files[] = $path;
+    }
+    return $files;
+  }
+  static function GetDirFilesObj($directory) {
+    $files = array();
+    $dh = opendir($directory);
+    while ($filename = readdir($dh)) {
+      if (in_array($filename, ['.', '..'])) continue;
+      $path = "$directory/$filename";
+      if (is_dir($path)) $files[$path] = Files::GetDirFilesObj($path);
+      else {
+        $o = new \stdClass();
+        $o->size = round(filesize($path) / 1024);
+        $o->modTime = filemtime($path);
+        $o->filename = $filename;
+        $o->path = $path;
+        $files[]=$o;
       }
     }
     return $files;
