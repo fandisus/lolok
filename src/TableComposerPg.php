@@ -23,11 +23,9 @@ class TableComposerPg extends TableComposerAbs {
     foreach ($props as $v) {
       $this->indexes[] = "CREATE INDEX idx_$v"."_$col"."_$this->tableName ON $this->tableName USING GIN (($col"."->'$v'));";
     }
-    return $this;
   }
   public function ginIndex() {
     $col = $this->lastCol;
     $this->indexes[] = "CREATE INDEX idx_$col"."_$this->tableName ON $this->tableName USING GIN ($col);";
-    return $this;
   }
 }

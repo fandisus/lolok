@@ -10,11 +10,6 @@ abstract class TableComposerAbs {
   protected $comments=[];
   protected $sequences=[];
 
-  protected function returner($colName) {
-    $this->lastCol = $colName;
-    return $this;
-  }
-
   public function __construct($tableName) { $this->tableName = $tableName; }
   public abstract function increments($colName);
   public abstract function bigIncrements($colName);
@@ -32,39 +27,34 @@ abstract class TableComposerAbs {
   public abstract function point($colName);
 
   
-  public function notNull() { $this->columns[count($this->columns)-1] .= " NOT NULL"; return $this; } //Same for all
+  public function notNull() { $this->columns[count($this->columns)-1] .= " NOT NULL"; } //Same for all
   public function unique($cols = '') { //Same for all
     if ($cols == "") $cols = $this->lastCol;
     $strCols = (is_array($cols)) ? implode(",",$cols) : $cols;
     $uq_name = (is_array($cols)) ? $cols[0] : str_replace(',','',str_replace(' ','', $cols));
     $this->constraints[] = "CONSTRAINT uq_$this->tableName"."_$uq_name UNIQUE ($strCols)";
-    return $this;
   }
   public function index($cols = '') { //Same for all (Pgsql default is USING BTREE index)
     if ($cols == "") $cols = $this->lastCol;
     $strCols = (is_array($cols)) ? implode(",",$cols) : $cols;
     $idx_name = (is_array($cols)) ? $cols[0] : str_replace(',','',str_replace(' ','', $cols));
     $this->indexes[] = "CREATE INDEX idx_$idx_name"."_$this->tableName ON $this->tableName ($strCols);";
-    return $this;
   }
   public function primary($cols="") { //Same for all
     if ($cols == "") $cols = $this->lastCol;
     $strCols = (is_array($cols)) ? implode(",",$cols) : $cols;
     $this->constraints[] = "CONSTRAINT pk_$this->tableName PRIMARY KEY ($strCols)";
-    return $this;
   }
   public function foreign($ref,$refcol,$onupdate = "",$ondelete = "") { //Same for all
     $col = $this->lastCol;
     $onupdate = ($onupdate == "") ? " ON UPDATE CASCADE" : " ON UPDATE $onupdate";
     $ondelete = ($ondelete == "") ? " ON DELETE CASCADE" : " ON DELETE $ondelete";
     $this->constraints[] = "CONSTRAINT fk_$col"."_$this->tableName FOREIGN KEY ($col) REFERENCES $ref ($refcol)$onupdate$ondelete";
-    return $this;
   }
   public function multiForeign($cols,$ref,$refcols,$onupdate,$ondelete) { //Same for all
     $onupdate = ($onupdate == "") ? "" : " ON UPDATE $onupdate";
     $ondelete = ($ondelete == "") ? "" : " ON DELETE $ondelete";
     $this->constraints[] = "CONSTRAINT fk_$ref"."_$this->tableName FOREIGN KEY ($cols) REFERENCES $ref ($refcols)$onupdate$ondelete";
-    return $this;
   }
   public function comment() { //Same for all
     $args = func_get_args();
@@ -77,7 +67,6 @@ abstract class TableComposerAbs {
     }
     $c = str_replace("'", "''", $c);
     $this->comments[] = "COMMENT ON COLUMN $this->tableName.$col IS '$c';";
-    return $this;
   }
   
   public function parse() { //Same for all?

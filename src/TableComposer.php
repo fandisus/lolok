@@ -4,56 +4,53 @@ namespace Fandisus\Lolok;
 use Exception;
 
 class TableComposer {
-  public $tableName;
   protected TableComposerAbs $adapter;
 
-  protected function returner($colName) {
-    $this->lastCol = $colName;
-    return $this;
-  }
   public function __construct($tableName) {
     if (DB::$engine === 'pgsql') $this->adapter = new TableComposerPg($tableName);
     elseif (DB::$engine === 'mysql') $this->adapter = new TableComposerMy($tableName);
     elseif (DB::$engine === 'ora') $this->adapter = new TableComposerOra($tableName);
   }
-  public function increments($colName) { return $this->adapter->increments($colName); }
-  public function bigIncrements($colName) { return $this->adapter->bigIncrements($colName); }
-  public function string($colName, $length=50) { return $this->adapter->string($colName, $length); }
-  public function text($colName) { return $this->adapter->string($colName); }
-  public function integer($colName) { return $this->adapter->integer($colName); }
-  public function bigInteger($colName) { return $this->adapter->bigInteger($colName); }
-  public function double($colName) { return $this->adapter->double($colName); }
-  public function numeric($colname, $precision, $scale) { return $this->adapter->numeric($colname, $precision, $scale); }
-  public function bool($colName) { return $this->adapter->bool($colName); }
-  public function timestamp($colName) { return $this->adapter->timestamp($colName); }
-  public function date($colName) { return $this->adapter->date($colName); }
-  public function time($colName) { return $this->adapter->time($colName); }
-  public function jsonb($colName) { return $this->adapter->jsonb($colName); }
-  public function point($colName) { return $this->adapter->point($colName); }
+  public function increments($colName) { $this->adapter->increments($colName); return $this; }
+  public function bigIncrements($colName) { $this->adapter->bigIncrements($colName); return $this; }
+  public function string($colName, $length=50) { $this->adapter->string($colName, $length); return $this; }
+  public function text($colName) { $this->adapter->string($colName); return $this; }
+  public function integer($colName) { $this->adapter->integer($colName); return $this; }
+  public function bigInteger($colName) { $this->adapter->bigInteger($colName); return $this; }
+  public function double($colName) { $this->adapter->double($colName); return $this; }
+  public function numeric($colname, $precision, $scale) {  $this->adapter->numeric($colname, $precision, $scale); return $this; }
+  public function bool($colName) { $this->adapter->bool($colName); return $this; }
+  public function timestamp($colName) { $this->adapter->timestamp($colName); return $this; }
+  public function date($colName) { $this->adapter->date($colName); return $this; }
+  public function time($colName) { $this->adapter->time($colName); return $this; }
+  public function jsonb($colName) { $this->adapter->jsonb($colName); return $this; }
+  public function point($colName) { $this->adapter->point($colName); return $this; }
   
-  public function notNull() { return $this->adapter->notNull(); }
-  public function unique($cols = '') { return $this->adapter->unique($cols); }
-  public function index() { return $this->adapter->index(); }
+  public function notNull() { $this->adapter->notNull(); return $this; }
+  public function unique($cols = '') { $this->adapter->unique($cols); return $this; }
+  public function index() { $this->adapter->index(); return $this; }
   public function ginPropIndex($props) {
     if (!$this->adapter instanceof TableComposerPg) throw new Exception('ginPropIndex is only supported for Postgres');
-    return $this->adapter->ginPropIndex($props);
+    $this->adapter->ginPropIndex($props); return $this; 
   }
   public function ginIndex() {
     if (!$this->adapter instanceof TableComposerPg) throw new Exception('ginIndex is only supported for Postgres');
-    return $this->adapter->ginIndex();
+    $this->adapter->ginIndex(); return $this; 
   }
   public function mysqlJsonIndex($props) {
     if (!$this->adapter instanceof TableComposerMy) throw new Exception('mysqlJsonIndex is only supported for MySQL');
-    return $this->adapter->jsonIndex($props);
+    $this->adapter->jsonIndex($props); return $this; 
   }
-  public function primary($cols="") { return $this->adapter->primary($cols); }
+  public function primary($cols="") { $this->adapter->primary($cols); return $this;}
   public function foreign($ref,$refcol,$onupdate = "",$ondelete = "") {
-    return $this->adapter->foreign($ref, $refcol, $onupdate, $ondelete);
+    $this->adapter->foreign($ref, $refcol, $onupdate, $ondelete);
+    return $this; 
   }
   public function multiForeign($cols,$ref,$refcols,$onupdate,$ondelete) {
-    return $this->adapter->multiForeign($cols, $ref, $refcols, $onupdate, $ondelete);
+    $this->adapter->multiForeign($cols, $ref, $refcols, $onupdate, $ondelete);
+    return $this; 
   }
-  public function comment() { return $this->adapter->comment(); }
+  public function comment() { $this->adapter->comment(); return $this; }
   
-  public function parse() { return $this->adapter->parse(); }
+  public function parse() { $this->adapter->parse(); return $this; }
 }
