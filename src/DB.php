@@ -3,7 +3,7 @@
 //static::$host, static::setHost, init($force = false) *sebelumnya $force=true belum diupdate ke ICFM. takut karena ubah method init.
 namespace Fandisus\Lolok;
 class DB {
-  public static DBEngineAbs $adapter;
+  public static $adapter;
   public static $engine = 'pgsql';
   public static function setConnection(string $engine, string $host, string $dbname, string $username, string $password, int $port) {
     if ($engine === 'mysql') self::$adapter = new DB_PDO_MySQL();
