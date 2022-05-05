@@ -4,7 +4,7 @@ namespace Fandisus\Lolok;
 use Exception;
 
 class TableComposer {
-  protected TableComposerAbs $adapter;
+  protected $adapter;
 
   public function __construct($tableName) {
     if (DB::$engine === 'pgsql') $this->adapter = new TableComposerPg($tableName);
