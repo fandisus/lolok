@@ -53,4 +53,5 @@ class TableComposer {
   public function comment() { $this->adapter->comment(); return $this; }
   
   public function parse() { return $this->adapter->parse(); }
+  public function execute() { $this->adapter->execute(); }
 }

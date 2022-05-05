@@ -77,4 +77,12 @@ abstract class TableComposerAbs {
     $creator = "CREATE TABLE $this->tableName (\n  $strInsides\n);";
     return array_merge( [$comment, $dropper, $creator], $this->indexes, $this->comments );
   }
+
+  public function execute() {
+    $sqls = $this->parse();
+    foreach ($sqls as $sql) {
+      if (substr($sql, 0, 2) == '--') continue;
+      DB::exec($sql,[]);
+    }
+  }
 }
