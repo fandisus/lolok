@@ -4,7 +4,7 @@
     "type": "library",
     "require": {
         "ezyang/htmlpurifier": "^4.13",
-        "mobiledetect/mobiledetectlib": "^2.8"
+        "jenssegers/agent": "^2.6"
     },
     "license": "MIT",
     "autoload": {
