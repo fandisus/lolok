@@ -26,12 +26,7 @@ class Files {
     die();
   }
 
-  /**
-   * Scan files informations in a directory.
-   * @param String $directory The directory to be scanned
-   * @return arrayofobj a[filename][size/modTime/path]
-   */
-  static function GetDirFiles($directory) { //recursive, 
+  static function GetDirFiles(string $directory) : array { //recursive, 
     $files = array();
     $dh = opendir($directory);
     while ($filename = readdir($dh)) {
@@ -42,7 +37,7 @@ class Files {
     }
     return $files;
   }
-  static function GetDirFilesObj($directory) {
+  static function GetDirFilesObj(string $directory) : array {
     $files = array();
     $dh = opendir($directory);
     while ($filename = readdir($dh)) {
