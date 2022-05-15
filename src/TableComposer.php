@@ -28,7 +28,7 @@ class TableComposer {
   
   public function notNull() { $this->adapter->notNull(); return $this; }
   public function unique($cols = '') { $this->adapter->unique($cols); return $this; }
-  public function index() { $this->adapter->index(); return $this; }
+  public function index($cols = '') { $this->adapter->index($cols); return $this; }
   public function ginPropIndex($props) {
     if (!$this->adapter instanceof TableComposerPg) throw new Exception('ginPropIndex is only supported for Postgres');
     $this->adapter->ginPropIndex($props); return $this; 
