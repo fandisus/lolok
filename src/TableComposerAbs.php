@@ -31,13 +31,13 @@ abstract class TableComposerAbs {
   public function unique($cols = '') { //Same for all
     if ($cols == "") $cols = $this->lastCol;
     $strCols = (is_array($cols)) ? implode(",",$cols) : $cols;
-    $uq_name = (is_array($cols)) ? $cols[0] : str_replace(',','',str_replace(' ','', $cols));
+    $uq_name = (is_array($cols)) ? $cols[0].'x'.count($cols) : str_replace(',','',str_replace(' ','', $cols));
     $this->constraints[] = "CONSTRAINT uq_$this->tableName"."_$uq_name UNIQUE ($strCols)";
   }
   public function index($cols = '') { //Same for all (Pgsql default is USING BTREE index)
     if ($cols == "") $cols = $this->lastCol;
     $strCols = (is_array($cols)) ? implode(",",$cols) : $cols;
-    $idx_name = (is_array($cols)) ? $cols[0] : str_replace(',','',str_replace(' ','', $cols));
+    $idx_name = (is_array($cols)) ? $cols[0].'x'.count($cols) : str_replace(',','',str_replace(' ','', $cols));
     $this->indexes[] = "CREATE INDEX idx_$idx_name"."_$this->tableName ON $this->tableName ($strCols);";
   }
   public function primary($cols="") { //Same for all
