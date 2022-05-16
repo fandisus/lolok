@@ -21,6 +21,7 @@ class TableComposer {
   public function numeric($colname, $precision, $scale) {  $this->adapter->numeric($colname, $precision, $scale); return $this; }
   public function bool($colName) { $this->adapter->bool($colName); return $this; }
   public function timestamp($colName) { $this->adapter->timestamp($colName); return $this; }
+  public function timestampTz($colName) { $this->adapter->timestampTz($colName); return $this; }
   public function date($colName) { $this->adapter->date($colName); return $this; }
   public function time($colName) { $this->adapter->time($colName); return $this; }
   public function jsonb($colName) { $this->adapter->jsonb($colName); return $this; }

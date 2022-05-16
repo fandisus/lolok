@@ -11,6 +11,7 @@ class TableComposerPg extends TableComposerAbs {
   public function numeric($colName, $precision, $scale) { $this->columns[] = "$colName NUMERIC ($precision, $scale)"; $this->lastCol = $colName; } //Same for all
   public function bool($colName) { $this->columns[] = "$colName BOOL"; $this->lastCol = $colName; } //Same for all
   public function timestamp($colName) { $this->columns[] = "$colName TIMESTAMP"; $this->lastCol = $colName; }
+  public function timestampTz($colName) { $this->columns[] = "$colName TIMESTAMPTZ"; $this->lastCol = $colName; }
   public function date($colName) { $this->columns[] = "$colName DATE"; $this->lastCol = $colName; } //Same for all
   public function time($colName) { $this->columns[] = "$colName TIME"; $this->lastCol = $colName; } //Same for all
   public function jsonb($colName) { $this->columns[] = "$colName JSONB"; $this->lastCol = $colName; }

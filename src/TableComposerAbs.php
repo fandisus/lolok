@@ -21,6 +21,7 @@ abstract class TableComposerAbs {
   public abstract function numeric($colname, $precision, $scale);
   public abstract function bool($colName);
   public abstract function timestamp($colName);
+  public abstract function timestampTz($colName);
   public abstract function date($colName);
   public abstract function time($colName);
   public abstract function jsonb($colName);

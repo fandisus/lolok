@@ -12,6 +12,7 @@ class TableComposerOra extends TableComposerAbs {
   public function numeric($colName, $precision, $scale) { $this->columns[] = "$colName NUMBER($precision, $scale)"; $this->lastCol = $colName; } //Same for all
   public function bool($colName) { $this->columns[] = "$colName CHAR(1)"; $this->lastCol = $colName; } //Same for all
   public function timestamp($colName) { $this->columns[] = "$colName TIMESTAMP"; $this->lastCol = $colName; }
+  public function timestampTz($colName) { throw new \Exception('Oracle db adapter does not support TimestampTz yet'); $this->lastCol = $colName; }
   public function date($colName) { $this->columns[] = "$colName DATE"; $this->lastCol = $colName; } //Same for all
   public function time($colName) { $this->columns[] = "$colName TIMESTAMP"; $this->lastCol = $colName; } //Same for all
   public function jsonb($colName) {
